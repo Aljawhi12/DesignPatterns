@@ -1,0 +1,7 @@
+**/bin/
+**/obj/
+/.vs/
+*.csproj.user
+
+# Contains local connection strings and broker credentials.
+/9-Outbox/appsettings.json
