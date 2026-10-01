@@ -2,6 +2,8 @@
 {
     public interface INotificationStrategy
     {
+        string Type { get; }
+
         void Send(string message);
     }
 }

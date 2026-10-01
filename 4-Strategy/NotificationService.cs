@@ -2,18 +2,27 @@
 
 namespace _4_Strategy
 {
+    // Strategy context: picks the right strategy at runtime and delegates to it.
     public class NotificationService
     {
-        private readonly INotificationStrategy _strategy;
+        private readonly Dictionary<string, INotificationStrategy> _strategies;
 
-        public NotificationService(INotificationStrategy strategy)
+        public NotificationService(IEnumerable<INotificationStrategy> strategies)
         {
-            _strategy = strategy;
+            _strategies = strategies.ToDictionary(
+                s => s.Type,
+                StringComparer.OrdinalIgnoreCase);
         }
 
-        public void Send(string message)
+        public IEnumerable<string> SupportedTypes => _strategies.Keys;
+
+        public bool TrySend(string type, string message)
         {
-            _strategy.Send(message);
+            if (!_strategies.TryGetValue(type, out var strategy))
+                return false;
+
+            strategy.Send(message);
+            return true;
         }
     }
 }

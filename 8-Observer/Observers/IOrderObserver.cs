@@ -4,6 +4,6 @@ namespace _8_Observer.Observers
 {
     public interface IOrderObserver
     {
-        Task Handle(OrderCreatedEvent Orderevent);
+        Task Handle(OrderCreatedEvent orderEvent);
     }
 }

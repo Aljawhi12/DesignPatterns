@@ -3,6 +3,6 @@
     public interface IRequestCounter
     {
         int GetCount();
-        void Increment();
+        int Increment();
     }
 }

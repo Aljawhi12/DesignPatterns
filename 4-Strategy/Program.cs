@@ -1,3 +1,4 @@
+using _4_Strategy;
 using _4_Strategy.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,11 +10,11 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 
-builder.Services.AddKeyedScoped<INotificationStrategy, EmailNotification>("email");
+builder.Services.AddScoped<INotificationStrategy, EmailNotification>();
+builder.Services.AddScoped<INotificationStrategy, SmsNotification>();
+builder.Services.AddScoped<INotificationStrategy, WhatsAppNotification>();
 
-builder.Services.AddKeyedScoped<INotificationStrategy, SmsNotification>("sms");
-
-builder.Services.AddKeyedScoped<INotificationStrategy, WhatsAppNotification>("whatsapp");
+builder.Services.AddScoped<NotificationService>();
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -24,9 +25,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
-app.UseSwagger();
-app.UseSwaggerUI();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

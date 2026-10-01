@@ -2,8 +2,8 @@
 {
     public class User
     {
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public bool IsAdmin { get; set; }
+        public required string Name { get; init; }
+        public required string Email { get; init; }
+        public bool IsAdmin { get; init; }
     }
 }

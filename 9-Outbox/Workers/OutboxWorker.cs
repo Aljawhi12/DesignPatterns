@@ -1,11 +1,15 @@
 ﻿using _9_Outbox.Data;
 using Microsoft.EntityFrameworkCore;
-using OutboxDemo.Messaging;
+using _9_Outbox.Messaging;
 
 namespace _9_Outbox.Workers
 {
     public class OutboxWorker : BackgroundService
     {
+        // After this many failures a message is skipped, so a "poison" message
+        // can't block the queue. Inspect its Error column and reset RetryCount to retry.
+        private const int MaxRetries = 5;
+
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<OutboxWorker> _logger;
 
@@ -38,7 +42,7 @@ namespace _9_Outbox.Workers
             }
         }
 
-        private async Task ProcessMessages( CancellationToken cancellationToken)
+        private async Task ProcessMessages(CancellationToken cancellationToken)
         {
             using var scope =
                 _scopeFactory.CreateScope();
@@ -50,7 +54,7 @@ namespace _9_Outbox.Workers
                 .GetRequiredService<RabbitMqPublisher>();
 
             var messages = await db.OutboxMessages
-                .Where(x => x.ProcessedAt == null)
+                .Where(x => x.ProcessedAt == null && x.RetryCount < MaxRetries)
                 .OrderBy(x => x.CreatedAt)
                 .Take(10)
                 .ToListAsync(cancellationToken);
@@ -60,8 +64,10 @@ namespace _9_Outbox.Workers
                 try
                 {
                     await publisher.PublishAsync(
+                        message.Id,
                         message.Type,
-                        message.Payload);
+                        message.Payload,
+                        cancellationToken);
 
                     message.ProcessedAt = DateTime.UtcNow;
                     message.Error = null;

@@ -14,7 +14,7 @@ namespace _3_Facade.Controllers
             _orderFacade = orderFacade;
         }
 
-        [HttpGet]
+        [HttpPost]
         public IActionResult CreateOrder()
         {
             _orderFacade.CreateOrder();

@@ -5,10 +5,10 @@ namespace _8_Observer.Observers
     public class LoggingObserver : IOrderObserver
     {
 
-        public Task Handle(OrderCreatedEvent Orderevent)
+        public Task Handle(OrderCreatedEvent orderEvent)
         {
             Console.WriteLine(
-            $"Order {Orderevent.OrderId} created");
+            $"Order {orderEvent.OrderId} created");
 
             return Task.CompletedTask;
         }

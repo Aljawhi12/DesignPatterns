@@ -6,12 +6,13 @@
 
         public int GetCount()
         {
-            return _count;
+            return Volatile.Read(ref _count);
         }
 
-        public void Increment()
+        // Singleton is shared by all concurrent requests, so the increment must be atomic.
+        public int Increment()
         {
-            _count++;
+            return Interlocked.Increment(ref _count);
         }
     }
 }

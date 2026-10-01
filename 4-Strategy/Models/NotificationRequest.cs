@@ -2,8 +2,7 @@
 {
     public class NotificationRequest
     {
-        public string Type { get; set; }
-        public string Message { get; set; }
-
+        public required string Type { get; set; }
+        public required string Message { get; set; }
     }
 }

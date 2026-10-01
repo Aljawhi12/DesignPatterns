@@ -1,3 +1,5 @@
+using _5_Factory;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,6 +9,8 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 
+builder.Services.AddSingleton<NotificationFactory>();
+
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
@@ -15,10 +19,9 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
-
-app.UseSwagger();
-app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 

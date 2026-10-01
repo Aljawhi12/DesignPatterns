@@ -5,10 +5,10 @@ namespace _8_Observer.Observers
     public class EmailObserver : IOrderObserver
     {
        
-        public Task Handle(OrderCreatedEvent Orderevent)
+        public Task Handle(OrderCreatedEvent orderEvent)
         {
             Console.WriteLine(
-                 $"Email sent for Order {Orderevent.OrderId}");
+                 $"Email sent for Order {orderEvent.OrderId}");
 
             return Task.CompletedTask;
         }

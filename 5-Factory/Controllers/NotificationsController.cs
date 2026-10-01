@@ -7,14 +7,26 @@ namespace _5_Factory.Controllers
     [ApiController]
     public class NotificationsController : ControllerBase
     {
+        private readonly NotificationFactory _factory;
+
+        public NotificationsController(NotificationFactory factory)
+        {
+            _factory = factory;
+        }
+
         [HttpPost]
         public IActionResult Send(string type, string message)
         {
-            var factory = new NotificationFactory();
+            try
+            {
+                var notification = _factory.Create(type);
 
-            var notification = factory.Create(type);
-
-            notification.Send(message);
+                notification.Send(message);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
             return Ok();
         }

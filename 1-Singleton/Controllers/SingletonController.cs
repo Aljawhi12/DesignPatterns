@@ -17,11 +17,11 @@ namespace _1_Singleton.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            _counter.Increment();
+            var count = _counter.Increment();
 
             return Ok(new
             {
-                Count = _counter.GetCount()
+                Count = count
             });
         }
     }

@@ -1,5 +1,4 @@
 ﻿using _4_Strategy.Models;
-using _4_Strategy.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,21 +8,22 @@ namespace _4_Strategy.Controllers
     [ApiController]
     public class StrategyController : ControllerBase
     {
-        private readonly IServiceProvider _serviceProvider;
+        private readonly NotificationService _notificationService;
 
-        public StrategyController(IServiceProvider serviceProvider)
+        public StrategyController(NotificationService notificationService)
         {
-            _serviceProvider = serviceProvider;
+            _notificationService = notificationService;
         }
 
         [HttpPost]
         public IActionResult Send(NotificationRequest request)
         {
-            var strategy =
-                _serviceProvider.GetRequiredKeyedService<INotificationStrategy>(
-                    request.Type.ToLower());
-
-            strategy.Send(request.Message);
+            if (!_notificationService.TrySend(request.Type, request.Message))
+            {
+                return BadRequest(
+                    $"Unknown notification type '{request.Type}'. " +
+                    $"Supported: {string.Join(", ", _notificationService.SupportedTypes)}");
+            }
 
             return Ok("Notification sent successfully");
         }

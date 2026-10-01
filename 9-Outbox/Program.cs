@@ -1,7 +1,7 @@
 using _9_Outbox.Data;
+using _9_Outbox.Messaging;
 using _9_Outbox.Workers;
 using Microsoft.EntityFrameworkCore;
-using OutboxDemo.Messaging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +18,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
             .GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddScoped<RabbitMqPublisher>();
+builder.Services.AddSingleton<RabbitMqPublisher>();
 
 builder.Services.AddHostedService<OutboxWorker>();
 
@@ -31,9 +31,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
-app.UseSwagger();
-app.UseSwaggerUI();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

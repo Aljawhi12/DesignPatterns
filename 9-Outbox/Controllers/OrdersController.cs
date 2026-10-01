@@ -19,10 +19,8 @@ namespace _9_Outbox.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(string productName,decimal amount)
+        public async Task<IActionResult> Create(string productName, decimal amount)
         {
-            await using var transaction = await _db.Database.BeginTransactionAsync();
-
             var order = new Order
             {
                 Id = Guid.NewGuid(),
@@ -50,9 +48,9 @@ namespace _9_Outbox.Controllers
 
             _db.OutboxMessages.Add(outboxMessage);
 
+            // Order + OutboxMessage are saved in one SaveChanges call,
+            // which EF Core wraps in a single database transaction.
             await _db.SaveChangesAsync();
-
-            await transaction.CommitAsync();
 
             return Ok(order);
         }

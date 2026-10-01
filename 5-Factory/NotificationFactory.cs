@@ -6,11 +6,11 @@ namespace _5_Factory
     {
         public INotification Create(string type)
         {
-            return type.ToLower() switch
+            return type?.ToLowerInvariant() switch
             {
                 "email" => new EmailNotification(),
                 "sms" => new SmsNotification(),
-                _ => throw new ArgumentException("Invalid notification type")
+                _ => throw new ArgumentException($"Invalid notification type '{type}'", nameof(type))
             };
         }
     }

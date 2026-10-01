@@ -1,4 +1,5 @@
 using _2_Decorator;
+using Microsoft.Extensions.Caching.Memory;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddMemoryCache();
 
 builder.Services.AddScoped<OrderService>();
 
@@ -24,13 +27,16 @@ builder.Services.AddScoped<IOrderService>(sp =>
             realService,
             logger);
 
-    var cachlogger =
+    var cacheLogger =
         sp.GetRequiredService<
             ILogger<CacheOrderService>>();
 
+    var cache =
+        sp.GetRequiredService<IMemoryCache>();
+
     IOrderService cacheDecorator =
         new CacheOrderService(
-            loggingDecorator, cachlogger);
+            loggingDecorator, cache, cacheLogger);
 
     return cacheDecorator;
 });

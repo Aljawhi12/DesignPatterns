@@ -5,10 +5,10 @@ namespace _8_Observer.Observers
     public class SMSObserver : IOrderObserver
     {
        
-        public Task Handle(OrderCreatedEvent Orderevent)
+        public Task Handle(OrderCreatedEvent orderEvent)
         {
             Console.WriteLine(
-                 $"SMS sent for Order {Orderevent.OrderId}");
+                 $"SMS sent for Order {orderEvent.OrderId}");
 
             return Task.CompletedTask;
         }
